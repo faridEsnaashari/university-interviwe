@@ -1,8 +1,32 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { config } from 'dotenv';
+import { appConfigs } from './app.configs';
+import { Logger } from 'nestjs-pino';
+import { Logger as L } from './common/tools/pino/logger.tool';
+import { UncaughtExceptionFilter } from './common/filters/uncaught-exceptions.filter';
+import { HttpExceptionFilter } from './common/filters/http-exceptions.filter';
+import { ResponseInterceptor } from './common/interseptors/response.interseptor';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  config();
+  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  app.useLogger(app.get(Logger));
+
+  app.useGlobalFilters(
+    new UncaughtExceptionFilter(),
+    new HttpExceptionFilter(),
+  );
+
+  app.useGlobalInterceptors(new ResponseInterceptor());
+
+  const logger = new L('bootstrap');
+  await app.listen(appConfigs.appPort, () =>
+    logger.log({
+      key: 'MAIN',
+      data: { msg: 'app started on port ' + appConfigs.appPort },
+    }),
+  );
+  return;
 }
 bootstrap();
