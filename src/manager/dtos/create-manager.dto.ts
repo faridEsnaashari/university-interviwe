@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createManagerDto = z
+export const createManagerDtoSchema = z
   .object({
     firstName: z.string().min(3),
     lastName: z.string().min(3),
@@ -12,4 +12,4 @@ export const createManagerDto = z
   })
   .required();
 
-export type CreateManagerDto = Required<z.infer<typeof createManagerDto>>;
+export type CreateManagerDto = Required<z.infer<typeof createManagerDtoSchema>>;

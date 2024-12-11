@@ -1,4 +1,3 @@
-import { Optional } from 'sequelize';
 import {
   AllowNull,
   AutoIncrement,
@@ -11,35 +10,27 @@ import {
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { CreateEntity, UpdateEntity } from 'src/common/types/entity.type';
 
 export type Manager = {
   id: number;
   firstName: string;
   lastName: string;
-  phone?: string;
-  nationalCode?: string;
-  birthOfDate?: string;
-  fatherName?: string;
+  phone: string;
+  nationalCode: string;
+  birthOfDate: string;
+  fatherName: string;
   gender: 'MALE' | 'FEMALE';
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 };
 
-export type CreateOrUpdateManager = {
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  nationalCode?: string;
-  birthOfDate?: string;
-  fatherName?: string;
-  gender: 'MALE' | 'FEMALE';
-  createdAt?: Date;
-  updatedAt?: Date;
-};
+export type CreateManager = CreateEntity<Manager>;
+export type UpdateManager = UpdateEntity<Manager>;
 
 @Table({ tableName: 'managers', underscored: true })
 export class ManagerModel
-  extends Model<Manager, Optional<Manager, 'id'>>
+  extends Model<Manager, CreateManager>
   implements Manager
 {
   @PrimaryKey
@@ -79,10 +70,10 @@ export class ManagerModel
   gender: 'MALE' | 'FEMALE';
 
   @CreatedAt
-  @Column
-  createdAt: Date;
+  @Column(DataType.DATE)
+  createdAt: string;
 
   @UpdatedAt
-  @Column
-  updatedAt: Date;
+  @Column(DataType.DATE)
+  updatedAt: string;
 }

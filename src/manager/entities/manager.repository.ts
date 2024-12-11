@@ -1,5 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrUpdateManager, Manager, ManagerModel } from './manager.entity';
+import {
+  CreateManager,
+  Manager,
+  ManagerModel,
+  UpdateManager,
+} from './manager.entity';
 import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
@@ -9,8 +14,15 @@ export class ManagerRepository {
     private managerModel: typeof ManagerModel,
   ) {}
 
-  async create(manager: CreateOrUpdateManager, raw = true): Promise<Manager> {
+  async create(manager: CreateManager, raw = true): Promise<Manager> {
     return this.managerModel.create(manager, { raw });
+  }
+
+  async updateOneById(
+    data: UpdateManager,
+    id: Manager['id'],
+  ): Promise<undefined> {
+    await this.managerModel.update(data, { where: { id } });
   }
 
   async findOneById(id: Manager['id']): Promise<Manager | null> {
