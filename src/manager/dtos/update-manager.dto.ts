@@ -7,6 +7,7 @@ export const updateManagerDtoSchema = z.object({
   nationalCode: z.string().min(3).optional(),
   birthOfDate: z.string().date().optional(),
   fatherName: z.string().min(3).optional(),
+  password: z.string().min(3).optional(),
   gender: z.literal('MALE').or(z.literal('FEMALE')).optional(),
   createdAt: z.string().date().optional(),
   updatedAt: z.string().date().optional(),

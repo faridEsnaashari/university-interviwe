@@ -17,6 +17,7 @@ export type Manager = {
   firstName: string;
   lastName: string;
   phone: string;
+  password: string;
   nationalCode: string;
   birthOfDate: string;
   fatherName: string;
@@ -42,6 +43,10 @@ export class ManagerModel
   @Default('admin')
   @Column
   firstName: string;
+
+  @AllowNull(false)
+  @Column
+  password: string;
 
   @AllowNull(false)
   @Default('admin')
