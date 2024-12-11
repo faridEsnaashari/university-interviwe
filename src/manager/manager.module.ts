@@ -9,5 +9,6 @@ import { ManagerRepository } from './entities/manager.repository';
   imports: [SequelizeModule.forFeature([ManagerModel])],
   providers: [ManagerService, ManagerRepository],
   controllers: [ManagerController],
+  exports: [ManagerRepository],
 })
 export class ManagerModule {}
