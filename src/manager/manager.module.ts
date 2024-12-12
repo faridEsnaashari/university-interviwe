@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ManagerController } from './manager.controller';
 import { ManagerModel } from './entities/manager.entity';
 import { ManagerService } from './manager.service';
 import { ManagerRepository } from './entities/manager.repository';
 
+@Global()
 @Module({
   imports: [SequelizeModule.forFeature([ManagerModel])],
   providers: [ManagerService, ManagerRepository],

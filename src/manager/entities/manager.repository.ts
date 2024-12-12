@@ -22,10 +22,13 @@ export class ManagerRepository {
   async findOne(
     conditions: FindOptions | UpdateManager,
     raw = true,
-  ): Promise<Manager | undefined> {
+  ): Promise<Manager | null> {
     return this.managerModel.findOne({
-      where: conditions['where'] || conditions,
-      raw: conditions['raw'] || raw,
+      where:
+        'where' in conditions
+          ? conditions.where
+          : (conditions as UpdateManager),
+      raw: 'raw' in conditions ? conditions.raw : raw,
     });
   }
 

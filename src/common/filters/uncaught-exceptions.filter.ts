@@ -10,15 +10,20 @@ export class UncaughtExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    //eslint-disable-next-line
+    const exp = exception as { message?: string; getResponse?: Function };
+
     this.logger.error({
       key: 'UNCAUGHT_EXCEPTION',
-      data: { message: exception['message'] },
+      data: {
+        message: exp?.message,
+      },
     });
 
     response.status(500).json({
       sucess: false,
-      message: exception['message'] || 'something bad happend',
-      data: exception['getResponse'] && exception['getResponse'](),
+      message: exp.message || 'something bad happend',
+      data: exp.getResponse && exp.getResponse(),
     });
   }
 }

@@ -9,7 +9,7 @@ config();
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: process.env.MYSQL_HOST,
-      port: +process.env.MYSQL_PORT,
+      port: process.env.MYSQL_PORT ? +process.env.MYSQL_PORT : 3609,
       username: process.env.MYSQL_USERNAME,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DATABASE,

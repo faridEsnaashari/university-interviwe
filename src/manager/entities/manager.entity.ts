@@ -37,48 +37,48 @@ export class ManagerModel
   @PrimaryKey
   @AutoIncrement
   @Column
-  id: number;
+  id!: number;
 
   @AllowNull(false)
   @Default('admin')
   @Column
-  firstName: string;
+  firstName!: string;
 
   @AllowNull(false)
   @Column
-  password: string;
+  password!: string;
 
   @AllowNull(false)
   @Default('admin')
   @Column
-  lastName: string;
+  lastName!: string;
 
   @AllowNull(true)
   @Column
-  fatherName: string;
+  fatherName!: string;
 
   @AllowNull(true)
   @Column
-  phone: string;
+  phone!: string;
 
   @AllowNull(true)
   @Column(DataType.DATEONLY)
-  birthOfDate: string;
+  birthOfDate!: string;
 
   @AllowNull(true)
   @Column
-  nationalCode: string;
+  nationalCode!: string;
 
   @AllowNull(false)
   @Default('MALE')
   @Column
-  gender: 'MALE' | 'FEMALE';
+  gender!: 'MALE' | 'FEMALE';
 
   @CreatedAt
   @Column(DataType.DATE)
-  createdAt: string;
+  createdAt!: string;
 
   @UpdatedAt
   @Column(DataType.DATE)
-  updatedAt: string;
+  updatedAt!: string;
 }

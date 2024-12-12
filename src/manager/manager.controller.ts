@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Put, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   CreateManagerDto,
@@ -9,6 +17,9 @@ import {
   UpdateManagerDto,
   updateManagerDtoSchema,
 } from './dtos/update-manager.dto';
+import { RolesAndPermissions } from 'src/common/decorators/roles-and-permissions.decorator';
+import { HasAccessGuard } from 'src/common/guards/HasAccess.guard';
+import { RolesEnum } from 'src/auth/enums/roles.enum';
 
 @Controller('manager')
 export class ManagerController {
@@ -16,11 +27,15 @@ export class ManagerController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createManagerDtoSchema))
+  @UseGuards(HasAccessGuard)
+  @RolesAndPermissions({ roles: [RolesEnum.MANAGER] })
   async createManager(@Body() createManagerDto: CreateManagerDto) {
     return this.managerService.createManager(createManagerDto);
   }
 
   @Put(':id')
+  @UseGuards(HasAccessGuard)
+  @RolesAndPermissions({ roles: [RolesEnum.MANAGER] })
   async updateManager(
     @Param('id') id: number,
     @Body(new ZodValidationPipe(updateManagerDtoSchema))
