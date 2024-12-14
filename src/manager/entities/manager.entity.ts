@@ -5,11 +5,13 @@ import {
   CreatedAt,
   DataType,
   Default,
+  HasMany,
   Model,
   PrimaryKey,
   Table,
   UpdatedAt,
 } from 'sequelize-typescript';
+import { UserHasPermissionModel } from 'src/auth/entities/user-has-permission.entity';
 import { CreateEntity, UpdateEntity } from 'src/common/types/entity.type';
 
 export type Manager = {
@@ -22,6 +24,7 @@ export type Manager = {
   birthOfDate: string;
   fatherName: string;
   gender: 'MALE' | 'FEMALE';
+  permissions?: UserHasPermissionModel[];
   createdAt: string;
   updatedAt: string;
 };
@@ -73,6 +76,12 @@ export class ManagerModel
   @Default('MALE')
   @Column
   gender!: 'MALE' | 'FEMALE';
+
+  @HasMany(() => UserHasPermissionModel, {
+    as: 'permissions',
+    scope: { modelType: 'managers' },
+  })
+  permissions!: UserHasPermissionModel[];
 
   @CreatedAt
   @Column(DataType.DATE)
