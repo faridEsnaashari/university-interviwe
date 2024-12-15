@@ -4,7 +4,7 @@ import {
   Manager,
   ManagerModel,
   UpdateManager,
-} from './manager.entity';
+} from '../manager.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { FindOptions } from 'sequelize';
 

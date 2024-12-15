@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ManagerModule } from 'src/manager/manager.module';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UserHasPermissionModel } from './entities/user-has-permission.entity';
+import { UserHasPermissionRepository } from './entities/repositories/user-has-permissions.repository';
 
 @Module({
-  imports: [
-    ManagerModule,
-    SequelizeModule.forFeature([UserHasPermissionModel]),
-  ],
-  providers: [AuthService],
+  imports: [SequelizeModule.forFeature([UserHasPermissionModel])],
+  providers: [AuthService, UserHasPermissionRepository],
   controllers: [AuthController],
+  exports: [UserHasPermissionRepository],
 })
 export class AuthModule {}

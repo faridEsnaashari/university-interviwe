@@ -90,5 +90,9 @@ export function authorizeLogic(
   neededPermission: PermissionsEnum[],
   userPermissions: PermissionsEnum[],
 ): boolean {
+  if (userPermissions.includes(PermissionsEnum.ALL)) {
+    return true;
+  }
+
   return neededPermission.every((np) => userPermissions.includes(np));
 }

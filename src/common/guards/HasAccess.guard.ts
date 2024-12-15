@@ -4,7 +4,7 @@ import {
   authorizeLogic,
   getToken,
 } from 'src/auth/logics/auth.logic';
-import { ManagerRepository } from 'src/manager/entities/manager.repository';
+import { ManagerRepository } from 'src/manager/entities/repositories/manager.repository';
 import { Permissions } from '../decorators/permissions.decorator';
 import { Reflector } from '@nestjs/core';
 
