@@ -17,9 +17,9 @@ import {
   UpdateManagerDto,
   updateManagerDtoSchema,
 } from './dtos/update-manager.dto';
-import { RolesAndPermissions } from 'src/common/decorators/roles-and-permissions.decorator';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { HasAccessGuard } from 'src/common/guards/HasAccess.guard';
-import { RolesEnum } from 'src/auth/enums/roles.enum';
+import { PermissionsEnum } from 'src/auth/enums/permissions.enum';
 
 @Controller('manager')
 export class ManagerController {
@@ -28,14 +28,14 @@ export class ManagerController {
   @Post()
   @UsePipes(new ZodValidationPipe(createManagerDtoSchema))
   @UseGuards(HasAccessGuard)
-  @RolesAndPermissions({ roles: [RolesEnum.MANAGER] })
+  @Permissions([PermissionsEnum.CREATE_MANAGER])
   async createManager(@Body() createManagerDto: CreateManagerDto) {
     return this.managerService.createManager(createManagerDto);
   }
 
   @Put(':id')
   @UseGuards(HasAccessGuard)
-  @RolesAndPermissions({ roles: [RolesEnum.MANAGER] })
+  @Permissions([PermissionsEnum.UPDATE_MANAGER])
   async updateManager(
     @Param('id') id: number,
     @Body(new ZodValidationPipe(updateManagerDtoSchema))

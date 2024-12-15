@@ -1,7 +1,11 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-import { authenticateLogic, getToken } from 'src/auth/logics/auth.logic';
+import {
+  authenticateLogic,
+  authorizeLogic,
+  getToken,
+} from 'src/auth/logics/auth.logic';
 import { ManagerRepository } from 'src/manager/entities/manager.repository';
-import { RolesAndPermissions } from '../decorators/roles-and-permissions.decorator';
+import { Permissions } from '../decorators/permissions.decorator';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
@@ -12,25 +16,28 @@ export class HasAccessGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const rolesAndPermissions = this.reflector.get(
-      RolesAndPermissions,
-      context.getHandler(),
-    );
+    const permissions = this.reflector.get(Permissions, context.getHandler());
     const request = context.switchToHttp().getRequest();
+
     const token = getToken(request.headers);
     if (!token) {
       return false;
     }
 
-    const user = await authenticateLogic(
-      token,
-      {
-        getManager: async (userObj) => this.managerRepo.findOne(userObj),
-      },
-      rolesAndPermissions?.roles,
-    );
+    const user = await authenticateLogic(token, {
+      getManager: async (userObj) => this.managerRepo.findOne(userObj),
+    });
 
     if (!user) {
+      return false;
+    }
+
+    const checkPermission = authorizeLogic(
+      permissions,
+      user.user?.permissions || [],
+    );
+
+    if (!checkPermission) {
       return false;
     }
 

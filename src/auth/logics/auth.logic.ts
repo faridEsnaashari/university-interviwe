@@ -2,6 +2,7 @@ import * as jwt from 'jsonwebtoken';
 import { authConfigs } from '../auth.login';
 import { Manager } from 'src/manager/entities/manager.entity';
 import { RolesEnum } from '../enums/roles.enum';
+import { PermissionsEnum } from '../enums/permissions.enum';
 
 export async function authenticateLogic(
   token: string,
@@ -11,8 +12,13 @@ export async function authenticateLogic(
       password: string;
     }) => Promise<Manager | null>;
   },
-  roles?: RolesEnum[],
-): Promise<{ user: Manager; role: RolesEnum.MANAGER } | false> {
+): Promise<
+  | {
+      user: Omit<Manager, 'permissions'> & { permissions: PermissionsEnum[] };
+      role: RolesEnum.MANAGER;
+    }
+  | false
+> {
   const userObj = jwt.verify(token, authConfigs.jwtSecretKey);
 
   if (
@@ -21,10 +27,6 @@ export async function authenticateLogic(
     typeof userObj.password !== 'string' ||
     typeof userObj.role !== 'string'
   ) {
-    return false;
-  }
-
-  if (roles && !roles.find((r) => userObj.role === r)) {
     return false;
   }
 
@@ -38,7 +40,13 @@ export async function authenticateLogic(
       return false;
     }
 
-    return { user, role: RolesEnum.MANAGER };
+    return {
+      user: {
+        ...user,
+        permissions: userObj.permissions || [],
+      },
+      role: RolesEnum.MANAGER,
+    };
   }
 
   return false;
@@ -76,4 +84,11 @@ export function getToken(headerObject: {
   }
 
   return token;
+}
+
+export function authorizeLogic(
+  neededPermission: PermissionsEnum[],
+  userPermissions: PermissionsEnum[],
+): boolean {
+  return neededPermission.every((np) => userPermissions.includes(np));
 }
