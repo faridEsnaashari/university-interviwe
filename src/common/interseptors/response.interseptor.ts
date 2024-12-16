@@ -11,14 +11,14 @@ export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       map((data) =>
-        data.count && data.rows
+        data?.count && data?.rows
           ? { rows: data.rows, paginationData: { total: data.count } }
           : data,
       ),
       map((data) => ({
         success: true,
         message: 'OPERATION_DONE',
-        data,
+        data: data || {},
       })),
     );
   }

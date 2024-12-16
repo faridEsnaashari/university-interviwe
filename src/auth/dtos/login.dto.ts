@@ -8,3 +8,12 @@ export const managerLoginDtoSchema = z
   .required();
 
 export type ManagerLoginDto = Required<z.infer<typeof managerLoginDtoSchema>>;
+
+export const expertLoginDtoSchema = z
+  .object({
+    nationalCode: z.string().min(3),
+    password: z.string().min(3),
+  })
+  .required();
+
+export type ExpertLoginDto = Required<z.infer<typeof expertLoginDtoSchema>>;

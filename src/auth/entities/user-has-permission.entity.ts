@@ -13,6 +13,7 @@ import {
 import { CreateEntity, UpdateEntity } from 'src/common/types/entity.type';
 import { PermissionsEnum } from '../enums/permissions.enum';
 import { ManagerModel } from 'src/manager/entities/manager.entity';
+import { ExpertModel } from 'src/expert/entities/expert.entity';
 
 export type UserHasPermission = {
   id: number;
@@ -40,6 +41,7 @@ export class UserHasPermissionModel
   @Column
   modelType!: string;
 
+  @ForeignKey(() => ExpertModel)
   @ForeignKey(() => ManagerModel)
   @AllowNull(false)
   @Column
