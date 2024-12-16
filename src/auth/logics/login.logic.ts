@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { authConfigs } from '../auth.login';
+import { authConfigs } from '../auth.configs';
 import { RolesEnum } from '../enums/roles.enum';
 import { PermissionsEnum } from '../enums/permissions.enum';
 

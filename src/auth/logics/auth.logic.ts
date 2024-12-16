@@ -1,9 +1,10 @@
 import * as jwt from 'jsonwebtoken';
-import { authConfigs } from '../auth.login';
+import { authConfigs } from '../auth.configs';
 import { Manager } from 'src/manager/entities/manager.entity';
 import { RolesEnum } from '../enums/roles.enum';
 import { PermissionsEnum } from '../enums/permissions.enum';
 import { Expert } from 'src/expert/entities/expert.entity';
+import { Teacher } from 'src/teacher/entities/teacher.entity';
 
 export async function authenticateLogic(
   token: string,
@@ -16,10 +17,14 @@ export async function authenticateLogic(
       nationalCode: string;
       password: string;
     }) => Promise<Expert | null>;
+    getTeacher: (userObj: {
+      nationalCode: string;
+      password: string;
+    }) => Promise<Teacher | null>;
   },
 ): Promise<
   | {
-      user: Omit<Manager | Expert, 'permissions'> & {
+      user: Omit<Manager | Expert | Teacher, 'permissions'> & {
         permissions: PermissionsEnum[];
       };
       role: RolesEnum;
@@ -72,6 +77,25 @@ export async function authenticateLogic(
         permissions: userObj.permissions || [],
       },
       role: RolesEnum.EXPERT,
+    };
+  }
+
+  if (userObj.role === RolesEnum.TEACHER) {
+    const user = await authenticateModelLogic<Teacher>(
+      { username: userObj.username, password: userObj.password },
+      getUserFns.getTeacher,
+    );
+
+    if (!user) {
+      return false;
+    }
+
+    return {
+      user: {
+        ...user,
+        permissions: userObj.permissions || [],
+      },
+      role: RolesEnum.TEACHER,
     };
   }
 

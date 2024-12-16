@@ -6,6 +6,7 @@ import { PinoModule } from './common/tools/pino/pino.module';
 import { ManagerModule } from './manager/manager.module';
 import { AuthModule } from './auth/auth.module';
 import { ExpertModule } from './expert/expert.module';
+import { TeacherModule } from './teacher/teacher.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ExpertModule } from './expert/expert.module';
     ManagerModule,
     AuthModule,
     ExpertModule,
+    TeacherModule,
   ],
   controllers: [AppController],
   providers: [AppService],

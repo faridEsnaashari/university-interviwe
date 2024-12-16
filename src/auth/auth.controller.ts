@@ -4,8 +4,10 @@ import { AuthService } from './auth.service';
 import {
   ExpertLoginDto,
   ManagerLoginDto,
+  TeachertLoginDto,
   expertLoginDtoSchema,
   managerLoginDtoSchema,
+  teacherLoginDtoSchema,
 } from './dtos/login.dto';
 
 @Controller('auth')
@@ -22,5 +24,11 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(expertLoginDtoSchema))
   async loginExpert(@Body() login: ExpertLoginDto) {
     return this.authService.loginExpert(login);
+  }
+
+  @Post('teacher/login')
+  @UsePipes(new ZodValidationPipe(teacherLoginDtoSchema))
+  async loginTeacher(@Body() login: TeachertLoginDto) {
+    return this.authService.loginTeacher(login);
   }
 }

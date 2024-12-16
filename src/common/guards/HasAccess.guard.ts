@@ -8,6 +8,7 @@ import { ManagerRepository } from 'src/manager/entities/repositories/manager.rep
 import { Permissions } from '../decorators/permissions.decorator';
 import { Reflector } from '@nestjs/core';
 import { ExpertRepository } from 'src/expert/entities/repositories/expert.repository';
+import { TeacherRepository } from 'src/teacher/entities/repositories/teacher.repository';
 
 @Injectable()
 export class HasAccessGuard implements CanActivate {
@@ -15,6 +16,7 @@ export class HasAccessGuard implements CanActivate {
     private reflector: Reflector,
     private managerRepo: ManagerRepository,
     private expertRepo: ExpertRepository,
+    private teacherRepo: TeacherRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -29,6 +31,7 @@ export class HasAccessGuard implements CanActivate {
     const user = await authenticateLogic(token, {
       getManager: async (userObj) => this.managerRepo.findOne(userObj),
       getExpert: async (userObj) => this.expertRepo.findOne(userObj),
+      getTeacher: async (userObj) => this.teacherRepo.findOne(userObj),
     });
 
     if (!user) {
