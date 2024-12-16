@@ -5,6 +5,8 @@ import { Manager } from './entities/manager.entity';
 import { UpdateManagerDto } from './dtos/update-manager.dto';
 import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user-has-permissions.repository';
 import { PermissionsEnum } from 'src/auth/enums/permissions.enum';
+import { FindAllManagerDto } from './dtos/find-all-manager.dto';
+import { Paginated } from 'src/common/types/pagination.type';
 
 @Injectable()
 export class ManagerService {
@@ -28,5 +30,18 @@ export class ManagerService {
 
   async updateManager(updateManagerDto: UpdateManagerDto, id: number) {
     return this.managerRepository.updateOneById(updateManagerDto, id);
+  }
+
+  async findOneManager(id: number) {
+    return this.managerRepository.findOneById(id);
+  }
+
+  async findAllManager(query: FindAllManagerDto): Promise<Paginated<Manager>> {
+    const { limit, page, ...where } = query;
+    return this.managerRepository.pagination({
+      where,
+      limit: +limit,
+      offset: +page - 1,
+    });
   }
 }

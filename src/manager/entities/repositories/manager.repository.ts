@@ -6,7 +6,8 @@ import {
   UpdateManager,
 } from '../manager.entity';
 import { InjectModel } from '@nestjs/sequelize';
-import { FindOptions } from 'sequelize';
+import { FindOptions, WhereOptions } from 'sequelize';
+import { Paginated } from 'src/common/types/pagination.type';
 
 @Injectable()
 export class ManagerRepository {
@@ -25,8 +26,44 @@ export class ManagerRepository {
     return result;
   }
 
+  async pagination(
+    conditions: FindOptions<Manager> | WhereOptions<Manager>,
+    raw = true,
+  ): Promise<Paginated<Manager>> {
+    const result = await this.managerModel.findAndCountAll({
+      where: !('where' in conditions)
+        ? (conditions as UpdateManager)
+        : undefined,
+      ...conditions,
+    });
+
+    if (raw) {
+      return JSON.parse(JSON.stringify(result));
+    }
+
+    return result;
+  }
+
+  async findAll(
+    conditions: FindOptions<Manager> | WhereOptions<Manager>,
+    raw = true,
+  ): Promise<Manager[]> {
+    const result = await this.managerModel.findAll({
+      where: !('where' in conditions)
+        ? (conditions as UpdateManager)
+        : undefined,
+      ...conditions,
+    });
+
+    if (raw) {
+      return JSON.parse(JSON.stringify(result));
+    }
+
+    return result;
+  }
+
   async findOne(
-    conditions: FindOptions | UpdateManager,
+    conditions: FindOptions<Manager> | WhereOptions<Manager>,
     raw = true,
   ): Promise<Manager | null> {
     const result = await this.managerModel.findOne({

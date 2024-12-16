@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
@@ -20,10 +22,31 @@ import {
 import { Permissions } from 'src/common/decorators/permissions.decorator';
 import { HasAccessGuard } from 'src/common/guards/HasAccess.guard';
 import { PermissionsEnum } from 'src/auth/enums/permissions.enum';
+import {
+  FindAllManagerDto,
+  findAllManagerDtoSchema,
+} from './dtos/find-all-manager.dto';
 
 @Controller('manager')
 export class ManagerController {
   constructor(private managerService: ManagerService) {}
+
+  @Get('')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_MANAGER])
+  async findAllManager(
+    @Query(new ZodValidationPipe(findAllManagerDtoSchema))
+    query: FindAllManagerDto,
+  ) {
+    return this.managerService.findAllManager(query);
+  }
+
+  @Get(':id')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_MANAGER])
+  async findOneManager(@Param('id') id: number) {
+    return this.managerService.findOneManager(id);
+  }
 
   @Post()
   @UsePipes(new ZodValidationPipe(createManagerDtoSchema))
