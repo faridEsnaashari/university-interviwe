@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ManagerRepository } from './entities/repositories/manager.repository';
 import { CreateManagerDto } from './dtos/create-manager.dto';
 import { Manager } from './entities/manager.entity';
@@ -7,6 +7,8 @@ import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user
 import { PermissionsEnum } from 'src/auth/enums/permissions.enum';
 import { FindAllManagerDto } from './dtos/find-all-manager.dto';
 import { Paginated } from 'src/common/types/pagination.type';
+import { saveFile } from 'src/common/file/save-file.logic';
+import { xlsxToJson } from 'src/common/file/xlsx-to-json.logic';
 
 @Injectable()
 export class ManagerService {
@@ -26,6 +28,20 @@ export class ManagerService {
     ]);
 
     return manager;
+  }
+
+  async uploadAdmission(file: Express.Multer.File) {
+    const savedFile = await saveFile(
+      file.originalname,
+      file.buffer,
+      'manager-files',
+    );
+
+    const data = xlsxToJson(savedFile);
+
+    if (!data) {
+      throw new BadRequestException('xlsx file is invalid');
+    }
   }
 
   async updateManager(updateManagerDto: UpdateManagerDto, id: number) {

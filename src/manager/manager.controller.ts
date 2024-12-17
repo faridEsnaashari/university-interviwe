@@ -6,7 +6,9 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
@@ -26,6 +28,7 @@ import {
   FindAllManagerDto,
   findAllManagerDtoSchema,
 } from './dtos/find-all-manager.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('manager')
 export class ManagerController {
@@ -54,6 +57,14 @@ export class ManagerController {
   @Permissions([PermissionsEnum.CREATE_MANAGER])
   async createManager(@Body() createManagerDto: CreateManagerDto) {
     return this.managerService.createManager(createManagerDto);
+  }
+
+  @Post('upload-admissions')
+  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.UPLOAD_ADMISSIONS])
+  async uploadAdmission(@UploadedFile() file: Express.Multer.File) {
+    return this.managerService.uploadAdmission(file);
   }
 
   @Put(':id')
