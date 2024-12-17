@@ -7,6 +7,7 @@ import { ManagerModule } from './manager/manager.module';
 import { AuthModule } from './auth/auth.module';
 import { ExpertModule } from './expert/expert.module';
 import { TeacherModule } from './teacher/teacher.module';
+import { FieldOfStudyModule } from './field-of-study/field-of-study.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { TeacherModule } from './teacher/teacher.module';
     AuthModule,
     ExpertModule,
     TeacherModule,
+    FieldOfStudyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
