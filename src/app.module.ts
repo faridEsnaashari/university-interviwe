@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ExpertModule } from './expert/expert.module';
 import { TeacherModule } from './teacher/teacher.module';
 import { FieldOfStudyModule } from './field-of-study/field-of-study.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FieldOfStudyModule } from './field-of-study/field-of-study.module';
     ExpertModule,
     TeacherModule,
     FieldOfStudyModule,
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

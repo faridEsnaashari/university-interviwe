@@ -3,31 +3,23 @@ import { ManagerRepository } from './entities/repositories/manager.repository';
 import { CreateManagerDto } from './dtos/create-manager.dto';
 import { Manager } from './entities/manager.entity';
 import { UpdateManagerDto } from './dtos/update-manager.dto';
-import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user-has-permissions.repository';
-import { PermissionsEnum } from 'src/auth/enums/permissions.enum';
 import { FindAllManagerDto } from './dtos/find-all-manager.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { saveFile } from 'src/common/file/save-file.logic';
 import { xlsxToJson } from 'src/common/file/xlsx-to-json.logic';
+import { mapAdmissionXlsxToStudent } from './logics/map-admission-xlsx-to-student.logic';
+import { StudentRepository } from 'src/student/entities/repositories/student.repository';
+import { createMultipleStudent } from 'src/student/logics/create-multiple-student.logic';
 
 @Injectable()
 export class ManagerService {
   constructor(
     private managerRepository: ManagerRepository,
-    private userHasPermissionRepository: UserHasPermissionRepository,
+    private studentRepository: StudentRepository,
   ) {}
 
   async createManager(createManagerDto: CreateManagerDto): Promise<Manager> {
-    const manager = await this.managerRepository.create(createManagerDto);
-    await this.userHasPermissionRepository.createBulk([
-      {
-        permission: PermissionsEnum.ALL,
-        modelType: 'managers',
-        modelId: manager.id,
-      },
-    ]);
-
-    return manager;
+    return this.managerRepository.create(createManagerDto);
   }
 
   async uploadAdmission(file: Express.Multer.File) {
@@ -42,6 +34,23 @@ export class ManagerService {
     if (!data) {
       throw new BadRequestException('xlsx file is invalid');
     }
+
+    const mappedStudents = mapAdmissionXlsxToStudent(
+      data as Record<string, number | undefined | string>[],
+    );
+
+    if (!mappedStudents) {
+      throw new BadRequestException('unknown error');
+    }
+
+    const duplicated = await createMultipleStudent(
+      mappedStudents.students,
+      (s) => this.studentRepository.create(s),
+    );
+
+    return {
+      wrongFormats: [...duplicated, ...mappedStudents.wrongFormats],
+    };
   }
 
   async updateManager(updateManagerDto: UpdateManagerDto, id: number) {

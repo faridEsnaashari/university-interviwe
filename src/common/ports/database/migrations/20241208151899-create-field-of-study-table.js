@@ -5,7 +5,7 @@ const { DataType } = require('sequelize-typescript');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    queryInterface.createTable('field-of-studies', {
+    queryInterface.createTable('field_of_studies', {
       id: {
         type: DataType.BIGINT.UNSIGNED,
         allowNull: false,
@@ -38,6 +38,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    queryInterface.dropTable('field-of-studies');
+    queryInterface.dropTable('field_of_studies');
   },
 };

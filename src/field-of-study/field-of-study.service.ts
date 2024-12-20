@@ -3,14 +3,10 @@ import { FieldOfStudyRepository } from './entities/repositories/field-of-study.r
 import { CreateFieldOfStudyDto } from './dtos/create-field-of-study.dto';
 import { FieldOfStudy } from './entities/field-of-study.entity';
 import { UpdateFieldOfStudyDto } from './dtos/update-field-of-study.dto';
-import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user-has-permissions.repository';
 
 @Injectable()
 export class FieldOfStudyService {
-  constructor(
-    private fieldOfStudyRepository: FieldOfStudyRepository,
-    private userHasPermissionRepository: UserHasPermissionRepository,
-  ) {}
+  constructor(private fieldOfStudyRepository: FieldOfStudyRepository) {}
 
   async createFieldOfStudy(
     createFieldOfStudyDto: CreateFieldOfStudyDto,

@@ -3,16 +3,12 @@ import { TeacherRepository } from './entities/repositories/teacher.repository';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { Teacher } from './entities/teacher.entity';
 import { UpdateTeacherDto } from './dtos/update-teacher.dto';
-import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user-has-permissions.repository';
 import { FindAllTeacherDto } from './dtos/find-all-teacher.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 
 @Injectable()
 export class TeacherService {
-  constructor(
-    private teacherRepository: TeacherRepository,
-    private userHasPermissionRepository: UserHasPermissionRepository,
-  ) {}
+  constructor(private teacherRepository: TeacherRepository) {}
 
   async createTeacher(createTeacherDto: CreateTeacherDto): Promise<Teacher> {
     return this.teacherRepository.create(createTeacherDto);

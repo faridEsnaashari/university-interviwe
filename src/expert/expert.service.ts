@@ -3,16 +3,12 @@ import { ExpertRepository } from './entities/repositories/expert.repository';
 import { CreateExpertDto } from './dtos/create-expert.dto';
 import { Expert } from './entities/expert.entity';
 import { UpdateExpertDto } from './dtos/update-expert.dto';
-import { UserHasPermissionRepository } from 'src/auth/entities/repositories/user-has-permissions.repository';
 import { FindAllExpertDto } from './dtos/find-all-expert.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 
 @Injectable()
 export class ExpertService {
-  constructor(
-    private expertRepository: ExpertRepository,
-    private userHasPermissionRepository: UserHasPermissionRepository,
-  ) {}
+  constructor(private expertRepository: ExpertRepository) {}
 
   async createExpert(createExpertDto: CreateExpertDto): Promise<Expert> {
     return this.expertRepository.create(createExpertDto);

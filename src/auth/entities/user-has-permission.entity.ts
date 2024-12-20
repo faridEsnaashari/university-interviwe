@@ -15,6 +15,7 @@ import { PermissionsEnum } from '../enums/permissions.enum';
 import { ManagerModel } from 'src/manager/entities/manager.entity';
 import { ExpertModel } from 'src/expert/entities/expert.entity';
 import { TeacherModel } from 'src/teacher/entities/teacher.entity';
+import { StudentModel } from 'src/student/entities/student.entity';
 
 export type UserHasPermission = {
   id: number;
@@ -45,6 +46,7 @@ export class UserHasPermissionModel
   @ForeignKey(() => ExpertModel)
   @ForeignKey(() => ManagerModel)
   @ForeignKey(() => TeacherModel)
+  @ForeignKey(() => StudentModel)
   @AllowNull(false)
   @Column
   modelId!: number;
