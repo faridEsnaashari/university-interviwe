@@ -13,6 +13,10 @@ import {
 } from './entities/user-has-permission.entity';
 import { ExpertRepository } from 'src/expert/entities/repositories/expert.repository';
 import { TeacherRepository } from 'src/teacher/entities/repositories/teacher.repository';
+import { PermissionsEnum } from './enums/permissions.enum';
+import { UserHasPermissionRepository } from './entities/repositories/user-has-permissions.repository';
+import { createUserHasPermModel } from './logics/permissions.logic';
+import { StudentRepository } from 'src/student/entities/repositories/student.repository';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +24,39 @@ export class AuthService {
     private expertRepo: ExpertRepository,
     private managerRepo: ManagerRepository,
     private teacherRepo: TeacherRepository,
+    private studentRepo: StudentRepository,
+    private userHasPermissionRepo: UserHasPermissionRepository,
   ) {}
+
+  getPermissions() {
+    return Object.keys(PermissionsEnum);
+  }
+
+  async assignPermissions(
+    permissions: PermissionsEnum[],
+    modelId: number,
+    modelType: RolesEnum,
+  ) {
+    if (modelType === RolesEnum.EXPERT) {
+      await this.expertRepo.findOneByIdOrFail(modelId);
+    }
+
+    if (modelType === RolesEnum.MANAGER) {
+      await this.managerRepo.findOneByIdOrFail(modelId);
+    }
+
+    if (modelType === RolesEnum.TEACHER) {
+      await this.teacherRepo.findOneByIdOrFail(modelId);
+    }
+
+    if (modelType === RolesEnum.STUDENT) {
+      await this.teacherRepo.findOneByIdOrFail(modelId);
+    }
+
+    this.userHasPermissionRepo.createBulk(
+      createUserHasPermModel(permissions, modelId, modelType),
+    );
+  }
 
   async loginTeacher(loginDto: TeachertLoginDto): Promise<{ token: string }> {
     try {

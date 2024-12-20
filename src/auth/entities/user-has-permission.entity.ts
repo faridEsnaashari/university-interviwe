@@ -19,7 +19,7 @@ import { StudentModel } from 'src/student/entities/student.entity';
 
 export type UserHasPermission = {
   id: number;
-  modelType: string;
+  modelType: 'managers' | 'experts' | 'teachers' | 'students';
   modelId: number;
   permission: PermissionsEnum;
   createdAt: string;
@@ -41,7 +41,7 @@ export class UserHasPermissionModel
 
   @AllowNull(false)
   @Column
-  modelType!: string;
+  modelType!: 'managers' | 'experts' | 'teachers' | 'students';
 
   @ForeignKey(() => ExpertModel)
   @ForeignKey(() => ManagerModel)

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateExpert,
   Expert,
@@ -92,6 +92,16 @@ export class ExpertRepository {
 
     if (raw) {
       return JSON.parse(JSON.stringify(result));
+    }
+
+    return result;
+  }
+
+  async findOneByIdOrFail(id: Expert['id'], raw = true): Promise<Expert> {
+    const result = await this.findOneById(id, raw);
+
+    if (!result) {
+      throw new NotFoundException('expert not found');
     }
 
     return result;

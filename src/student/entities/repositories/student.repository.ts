@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateStudent,
   Student,
@@ -92,6 +92,16 @@ export class StudentRepository {
 
     if (raw) {
       return JSON.parse(JSON.stringify(result));
+    }
+
+    return result;
+  }
+
+  async findOneByIdOrFail(id: Student['id'], raw = true): Promise<Student> {
+    const result = await this.findOneById(id, raw);
+
+    if (!result) {
+      throw new NotFoundException('student not found');
     }
 
     return result;

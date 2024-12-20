@@ -1,4 +1,11 @@
-import { Body, Controller, Post, UsePipes } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  UsePipes,
+} from '@nestjs/common';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { AuthService } from './auth.service';
 import {
@@ -9,6 +16,13 @@ import {
   managerLoginDtoSchema,
   teacherLoginDtoSchema,
 } from './dtos/login.dto';
+import { HasAccessGuard } from 'src/common/guards/HasAccess.guard';
+import { PermissionsEnum } from './enums/permissions.enum';
+import { Permissions } from 'src/common/decorators/permissions.decorator';
+import {
+  AssignPermissionsDto,
+  assignPermissionsDtoSchema,
+} from './dtos/assign-permissions.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,5 +44,20 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(teacherLoginDtoSchema))
   async loginTeacher(@Body() login: TeachertLoginDto) {
     return this.authService.loginTeacher(login);
+  }
+
+  @Get('permissions')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_TEACHER])
+  getPermissions() {
+    return this.authService.getPermissions();
+  }
+
+  @Post('assign-permissions')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_TEACHER])
+  @UsePipes(new ZodValidationPipe(assignPermissionsDtoSchema))
+  async assignPermissions(@Body() body: AssignPermissionsDto) {
+    this.authService.assignPermissions(body.permissions, body.id, body.type);
   }
 }

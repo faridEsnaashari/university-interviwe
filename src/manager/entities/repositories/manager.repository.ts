@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateManager,
   Manager,
@@ -92,6 +92,16 @@ export class ManagerRepository {
 
     if (raw) {
       return JSON.parse(JSON.stringify(result));
+    }
+
+    return result;
+  }
+
+  async findOneByIdOrFail(id: Manager['id'], raw = true): Promise<Manager> {
+    const result = await this.findOneById(id, raw);
+
+    if (!result) {
+      throw new NotFoundException('manager not found');
     }
 
     return result;
