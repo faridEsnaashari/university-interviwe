@@ -10,6 +10,7 @@ import { jsonToXlsx, xlsxToJson } from 'src/common/file/xlsx.logic';
 import { mapAdmissionXlsxToStudent } from './logics/map-admission-xlsx-to-student.logic';
 import { StudentRepository } from 'src/student/entities/repositories/student.repository';
 import { createMultipleStudent } from 'src/student/logics/create-multiple-student.logic';
+import { createSearchObject } from 'src/common/ports/database/helpers.tool';
 
 @Injectable()
 export class ManagerService {
@@ -62,9 +63,15 @@ export class ManagerService {
   }
 
   async findAllManager(query: FindAllManagerDto): Promise<Paginated<Manager>> {
-    const { limit, page, ...where } = query;
+    const { limit, page, q, ...where } = query;
+    const searchObject = createSearchObject<Manager>(q || '', [
+      'firstName',
+      'lastName',
+      'phone',
+      'nationalCode',
+    ]);
     return this.managerRepository.pagination({
-      where,
+      where: { ...searchObject, ...where },
       limit: +limit,
       offset: +page - 1,
     });

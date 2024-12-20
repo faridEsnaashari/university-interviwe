@@ -6,6 +6,7 @@ import { UpdateExpertDto } from './dtos/update-expert.dto';
 import { FindAllExpertDto } from './dtos/find-all-expert.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
+import { createSearchObject } from 'src/common/ports/database/helpers.tool';
 
 @Injectable()
 export class ExpertService {
@@ -24,9 +25,15 @@ export class ExpertService {
   }
 
   async findAllExpert(query: FindAllExpertDto): Promise<Paginated<Expert>> {
-    const { limit, page, ...where } = query;
+    const { limit, page, q, ...where } = query;
+    const searchObject = createSearchObject<Expert>(q || '', [
+      'firstName',
+      'lastName',
+      'phone',
+      'nationalCode',
+    ]);
     return this.expertRepository.pagination({
-      where,
+      where: { ...searchObject, ...where },
       limit: +limit,
       offset: +page - 1,
     });

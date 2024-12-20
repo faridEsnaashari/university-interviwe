@@ -1,41 +1,10 @@
-import { Op } from 'sequelize';
 import { z } from 'zod';
 
 export const findAllStudentDtoSchema = z.preprocess(
   (value) => JSON.parse(JSON.stringify(value)),
   z
     .object({
-      firstName: z
-        .string()
-        .min(3)
-        .optional()
-        .transform((val) => val && { [Op.like as symbol]: `%${val}%` }),
-
-      lastName: z
-        .string()
-        .min(3)
-        .optional()
-        .transform((val) => val && { [Op.like as symbol]: `%${val}%` }),
-
-      phone: z
-        .string()
-        .min(3)
-        .optional()
-        .transform((val) => val && { [Op.like as symbol]: `%${val}%` }),
-
-      nationalCode: z
-        .string()
-        .min(3)
-        .optional()
-        .transform((val) => val && { [Op.like as symbol]: `%${val}%` }),
-
-      birthOfDate: z.string().date().optional(),
-
-      fatherName: z
-        .string()
-        .min(3)
-        .optional()
-        .transform((val) => val && { [Op.like as symbol]: `%${val}%` }),
+      q: z.string().min(3).optional(),
 
       gender: z.literal('MALE').or(z.literal('FEMALE')).optional(),
 

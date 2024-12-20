@@ -6,6 +6,7 @@ import { UpdateTeacherDto } from './dtos/update-teacher.dto';
 import { FindAllTeacherDto } from './dtos/find-all-teacher.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
+import { createSearchObject } from 'src/common/ports/database/helpers.tool';
 
 @Injectable()
 export class TeacherService {
@@ -24,9 +25,15 @@ export class TeacherService {
   }
 
   async findAllTeacher(query: FindAllTeacherDto): Promise<Paginated<Teacher>> {
-    const { limit, page, ...where } = query;
+    const { limit, page, q, ...where } = query;
+    const searchObject = createSearchObject<Teacher>(q || '', [
+      'firstName',
+      'lastName',
+      'phone',
+      'nationalCode',
+    ]);
     return this.teacherRepository.pagination({
-      where,
+      where: { ...searchObject, ...where },
       limit: +limit,
       offset: +page - 1,
     });
