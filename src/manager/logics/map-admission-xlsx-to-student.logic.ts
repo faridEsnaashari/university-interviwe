@@ -44,7 +44,7 @@ export function mapAdmissionXlsxToStudent(
         firstName: d['نام'],
         lastName: d['نام خانوادگی'],
         phone: d['موبایل'],
-        password: d['کد ملی'],
+        password: d['شماره طاوطلب'],
         nationalCode: d['کد ملی'],
         birthOfDate: d['تاریخ تولد'],
         fatherName: d['نام پدر'],

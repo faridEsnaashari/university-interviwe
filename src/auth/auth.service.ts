@@ -4,6 +4,7 @@ import { ManagerRepository } from 'src/manager/entities/repositories/manager.rep
 import {
   ExpertLoginDto,
   ManagerLoginDto,
+  StudentLoginDto,
   TeachertLoginDto,
 } from './dtos/login.dto';
 import { RolesEnum } from './enums/roles.enum';
@@ -56,6 +57,34 @@ export class AuthService {
     this.userHasPermissionRepo.createBulk(
       createUserHasPermModel(permissions, modelId, modelType),
     );
+  }
+
+  async loginStudent(loginDto: StudentLoginDto): Promise<{ token: string }> {
+    try {
+      const student = await this.studentRepo.findOne({
+        where: { ...loginDto },
+        include: [
+          {
+            model: UserHasPermissionModel,
+            as: 'permissions',
+          },
+        ],
+      });
+
+      if (!student) {
+        throw '';
+      }
+
+      const token = await loginLogic(
+        loginDto.nationalCode,
+        loginDto.password,
+        student.permissions?.map((p: UserHasPermission) => p.permission) || [],
+        RolesEnum.TEACHER,
+      );
+      return { token };
+    } catch {
+      throw new UnauthorizedException('username or password incorrect');
+    }
   }
 
   async loginTeacher(loginDto: TeachertLoginDto): Promise<{ token: string }> {

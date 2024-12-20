@@ -11,9 +11,11 @@ import { AuthService } from './auth.service';
 import {
   ExpertLoginDto,
   ManagerLoginDto,
+  StudentLoginDto,
   TeachertLoginDto,
   expertLoginDtoSchema,
   managerLoginDtoSchema,
+  studentLoginDtoSchema,
   teacherLoginDtoSchema,
 } from './dtos/login.dto';
 import { HasAccessGuard } from 'src/common/guards/HasAccess.guard';
@@ -44,6 +46,12 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(teacherLoginDtoSchema))
   async loginTeacher(@Body() login: TeachertLoginDto) {
     return this.authService.loginTeacher(login);
+  }
+
+  @Post('student/login')
+  @UsePipes(new ZodValidationPipe(studentLoginDtoSchema))
+  async loginStudent(@Body() login: StudentLoginDto) {
+    return this.authService.loginStudent(login);
   }
 
   @Get('permissions')
