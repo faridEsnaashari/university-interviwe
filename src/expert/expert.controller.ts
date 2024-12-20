@@ -41,6 +41,16 @@ export class ExpertController {
     return this.expertService.findAllExpert(query);
   }
 
+  @Get('export')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_EXPERT, PermissionsEnum.EXPORT_EXPERT])
+  async exportAllExpert(
+    @Query(new ZodValidationPipe(findAllExpertDtoSchema))
+    query: FindAllExpertDto,
+  ) {
+    return this.expertService.exportAllExpert(query);
+  }
+
   @Get(':id')
   @UseGuards(HasAccessGuard)
   @Permissions([PermissionsEnum.FIND_EXPERT])

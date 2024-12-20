@@ -35,6 +35,16 @@ export class StudentController {
     return this.studentService.findAllStudent(query);
   }
 
+  @Get('export')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_STUDENT, PermissionsEnum.EXPORT_STUDENT])
+  async exportAllStudent(
+    @Query(new ZodValidationPipe(findAllStudentDtoSchema))
+    query: FindAllStudentDto,
+  ) {
+    return this.studentService.exportAllStudent(query);
+  }
+
   @Get(':id')
   @UseGuards(HasAccessGuard)
   @Permissions([PermissionsEnum.FIND_EXPERT])

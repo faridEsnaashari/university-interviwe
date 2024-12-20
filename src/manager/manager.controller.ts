@@ -44,6 +44,16 @@ export class ManagerController {
     return this.managerService.findAllManager(query);
   }
 
+  @Get('export')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_MANAGER, PermissionsEnum.EXPORT_MANAGER])
+  async exportAllManager(
+    @Query(new ZodValidationPipe(findAllManagerDtoSchema))
+    query: FindAllManagerDto,
+  ) {
+    return this.managerService.exportAllManager(query);
+  }
+
   @Get(':id')
   @UseGuards(HasAccessGuard)
   @Permissions([PermissionsEnum.FIND_MANAGER])

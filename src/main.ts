@@ -7,11 +7,17 @@ import { Logger as L } from './common/tools/pino/logger.tool';
 import { UncaughtExceptionFilter } from './common/filters/uncaught-exceptions.filter';
 import { HttpExceptionFilter } from './common/filters/http-exceptions.filter';
 import { ResponseInterceptor } from './common/interseptors/response.interseptor';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { resolve } from 'path';
 
 async function bootstrap() {
   config();
-  const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
   app.useLogger(app.get(Logger));
+
+  app.useStaticAssets(resolve('./', 'public'));
 
   app.useGlobalFilters(
     new UncaughtExceptionFilter(),

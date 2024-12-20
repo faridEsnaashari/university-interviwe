@@ -5,6 +5,7 @@ import { Expert } from './entities/expert.entity';
 import { UpdateExpertDto } from './dtos/update-expert.dto';
 import { FindAllExpertDto } from './dtos/find-all-expert.dto';
 import { Paginated } from 'src/common/types/pagination.type';
+import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 
 @Injectable()
 export class ExpertService {
@@ -29,5 +30,16 @@ export class ExpertService {
       limit: +limit,
       offset: +page - 1,
     });
+  }
+
+  async exportAllExpert(query: FindAllExpertDto): Promise<string> {
+    const data = await this.findAllExpert(query);
+    const path = await jsonToXlsx(data.rows);
+
+    if (!path) {
+      throw new Error();
+    }
+
+    return path;
   }
 }

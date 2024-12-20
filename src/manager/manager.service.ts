@@ -5,8 +5,8 @@ import { Manager } from './entities/manager.entity';
 import { UpdateManagerDto } from './dtos/update-manager.dto';
 import { FindAllManagerDto } from './dtos/find-all-manager.dto';
 import { Paginated } from 'src/common/types/pagination.type';
-import { saveFile } from 'src/common/file/save-file.logic';
-import { xlsxToJson } from 'src/common/file/xlsx-to-json.logic';
+import { saveUploadedFile } from 'src/common/file/save-file.logic';
+import { jsonToXlsx, xlsxToJson } from 'src/common/file/xlsx.logic';
 import { mapAdmissionXlsxToStudent } from './logics/map-admission-xlsx-to-student.logic';
 import { StudentRepository } from 'src/student/entities/repositories/student.repository';
 import { createMultipleStudent } from 'src/student/logics/create-multiple-student.logic';
@@ -23,7 +23,7 @@ export class ManagerService {
   }
 
   async uploadAdmission(file: Express.Multer.File) {
-    const savedFile = await saveFile(
+    const savedFile = await saveUploadedFile(
       file.originalname,
       file.buffer,
       'manager-files',
@@ -68,5 +68,16 @@ export class ManagerService {
       limit: +limit,
       offset: +page - 1,
     });
+  }
+
+  async exportAllManager(query: FindAllManagerDto): Promise<string> {
+    const data = await this.findAllManager(query);
+    const path = await jsonToXlsx(data.rows);
+
+    if (!path) {
+      throw new Error();
+    }
+
+    return path;
   }
 }

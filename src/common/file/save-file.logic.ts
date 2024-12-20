@@ -1,15 +1,14 @@
 import { mkdirSync, existsSync, writeFile } from 'fs';
 import * as path from 'node:path';
 
-export function saveFile(
+function saveFile(
   fileName: string,
   file: NodeJS.ArrayBufferView,
   filePath = '',
 ): Promise<string> {
-  const pth = path.resolve(`./uploads/${filePath}`);
-  const pthWithFilename = path.resolve(pth, `${Date.now()}-${fileName}`);
-  if (!existsSync(pth)) {
-    mkdirSync(pth, { recursive: true });
+  const pthWithFilename = path.resolve(filePath, `${Date.now()}-${fileName}`);
+  if (!existsSync(filePath)) {
+    mkdirSync(filePath, { recursive: true });
   }
 
   return new Promise((res, rej) => {
@@ -22,4 +21,19 @@ export function saveFile(
       res(pthWithFilename);
     });
   });
+}
+
+export function saveTempPublicFile(
+  fileName: string,
+  file: NodeJS.ArrayBufferView,
+): Promise<string> {
+  return saveFile(fileName, file, path.resolve('./public/', 'temps'));
+}
+
+export function saveUploadedFile(
+  fileName: string,
+  file: NodeJS.ArrayBufferView,
+  filePath = '',
+) {
+  return saveFile(fileName, file, path.resolve('./uploads/', filePath));
 }

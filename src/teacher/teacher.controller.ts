@@ -41,6 +41,16 @@ export class TeacherController {
     return this.teacherService.findAllTeacher(query);
   }
 
+  @Get('export')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.FIND_TEACHER, PermissionsEnum.EXPORT_TEACHER])
+  async exportAllTeacher(
+    @Query(new ZodValidationPipe(findAllTeacherDtoSchema))
+    query: FindAllTeacherDto,
+  ) {
+    return this.teacherService.exportAllTeacher(query);
+  }
+
   @Get(':id')
   @UseGuards(HasAccessGuard)
   @Permissions([PermissionsEnum.FIND_TEACHER])

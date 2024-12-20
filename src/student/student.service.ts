@@ -4,6 +4,7 @@ import { Student } from './entities/student.entity';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { FindAllStudentDto } from './dtos/find-all-student.dto';
 import { Paginated } from 'src/common/types/pagination.type';
+import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 
 @Injectable()
 export class StudentService {
@@ -28,5 +29,16 @@ export class StudentService {
       limit: +limit,
       offset: +page - 1,
     });
+  }
+
+  async exportAllStudent(query: FindAllStudentDto): Promise<string> {
+    const data = await this.findAllStudent(query);
+    const path = await jsonToXlsx(data.rows);
+
+    if (!path) {
+      throw new Error();
+    }
+
+    return path;
   }
 }
