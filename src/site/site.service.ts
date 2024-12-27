@@ -4,6 +4,7 @@ import { getFileName } from 'src/common/file/files.logic';
 import { UploadedFileRepository } from 'src/uploaded-file/entities/repositories/uploaded-file.repository';
 import { UploadedFileTypesEnum } from 'src/uploaded-file/enums/uploaded-file-types.enum';
 import { StudentRepository } from 'src/student/entities/repositories/student.repository';
+import { getTimeRandomNumber } from 'src/common/tools/random.tool';
 
 @Injectable()
 export class SiteService {
@@ -52,5 +53,27 @@ export class SiteService {
 
   async findOneStudent(id: number) {
     return this.studentRepository.findOneById(id);
+  }
+
+  async complete(id: number) {
+    await this.uploadedFileRepository.findOneOrFail({
+      where: {
+        modelType: 'students',
+        modelId: id,
+        uploadType: UploadedFileTypesEnum.BILL,
+      },
+      order: [['createdAt', 'DESC']],
+    });
+
+    await this.uploadedFileRepository.findOneOrFail({
+      where: {
+        modelType: 'students',
+        modelId: id,
+        uploadType: UploadedFileTypesEnum.CV,
+      },
+      order: [['createdAt', 'DESC']],
+    });
+
+    return { referenceCode: getTimeRandomNumber(7) };
   }
 }

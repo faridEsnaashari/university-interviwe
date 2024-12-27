@@ -45,6 +45,11 @@ export class SiteController {
     return this.siteService.uploadBill(req.user.id, file);
   }
 
+  @Post('complete')
+  @UseGuards(HasAccessGuard)
+  async complete(@Req() req: { user: { id: number } }) {
+    return this.siteService.complete(req.user.id);
+  }
   //  @Post()
   //  @UsePipes(new ZodValidationPipe(createSiteDtoSchema))
   //  @UseGuards(HasAccessGuard)
