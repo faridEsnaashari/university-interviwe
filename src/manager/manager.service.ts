@@ -5,7 +5,7 @@ import { Manager } from './entities/manager.entity';
 import { UpdateManagerDto } from './dtos/update-manager.dto';
 import { FindAllManagerDto } from './dtos/find-all-manager.dto';
 import { Paginated } from 'src/common/types/pagination.type';
-import { saveUploadedFile } from 'src/common/file/save-file.logic';
+import { saveUploadedFile } from 'src/common/file/files.logic';
 import { jsonToXlsx, xlsxToJson } from 'src/common/file/xlsx.logic';
 import { mapAdmissionXlsxToStudent } from './logics/map-admission-xlsx-to-student.logic';
 import { StudentRepository } from 'src/student/entities/repositories/student.repository';

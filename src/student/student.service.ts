@@ -6,10 +6,7 @@ import { FindAllStudentDto } from './dtos/find-all-student.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 import { createSearchObject } from 'src/common/ports/database/helpers.tool';
-import {
-  makeFilePublic,
-  saveUploadedFile,
-} from 'src/common/file/save-file.logic';
+import { makeFilePublic, saveUploadedFile } from 'src/common/file/files.logic';
 import { getFileName, getFileUrl } from 'src/common/file/files.logic';
 import { UploadedFileRepository } from 'src/uploaded-file/entities/repositories/uploaded-file.repository';
 import { UploadedFileTypesEnum } from 'src/uploaded-file/enums/uploaded-file-types.enum';

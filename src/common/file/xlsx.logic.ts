@@ -1,6 +1,6 @@
 import * as xlsx from 'xlsx';
 import { Logger } from '../tools/pino/logger.tool';
-import { saveTempPublicFile } from './save-file.logic';
+import { saveTempPublicFile } from './files.logic';
 import { getRandomNumber } from '../tools/random.tool';
 
 export function xlsxToJson<T>(filePath: string): T[] | false {

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { saveUploadedFile } from 'src/common/file/save-file.logic';
+import { saveUploadedFile } from 'src/common/file/files.logic';
 import { getFileName } from 'src/common/file/files.logic';
 import { UploadedFileRepository } from 'src/uploaded-file/entities/repositories/uploaded-file.repository';
 import { UploadedFileTypesEnum } from 'src/uploaded-file/enums/uploaded-file-types.enum';
