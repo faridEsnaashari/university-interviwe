@@ -11,6 +11,7 @@ import { mapAdmissionXlsxToStudent } from './logics/map-admission-xlsx-to-studen
 import { StudentRepository } from 'src/student/entities/repositories/student.repository';
 import { createMultipleStudent } from 'src/student/logics/create-multiple-student.logic';
 import { createSearchObject } from 'src/common/ports/database/helpers.tool';
+import { getFileName, getFileUrl } from 'src/common/file/files.logic';
 
 @Injectable()
 export class ManagerService {
@@ -25,7 +26,7 @@ export class ManagerService {
 
   async uploadAdmission(file: Express.Multer.File) {
     const savedFile = await saveUploadedFile(
-      file.originalname,
+      getFileName(file.originalname),
       file.buffer,
       'manager-files',
     );
@@ -85,6 +86,6 @@ export class ManagerService {
       throw new Error();
     }
 
-    return path;
+    return getFileUrl(path);
   }
 }

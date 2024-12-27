@@ -5,6 +5,7 @@ import { RolesEnum } from '../enums/roles.enum';
 import { PermissionsEnum } from '../enums/permissions.enum';
 import { Expert } from 'src/expert/entities/expert.entity';
 import { Teacher } from 'src/teacher/entities/teacher.entity';
+import { Student } from 'src/student/entities/student.entity';
 
 export async function authenticateLogic(
   token: string,
@@ -21,10 +22,14 @@ export async function authenticateLogic(
       nationalCode: string;
       password: string;
     }) => Promise<Teacher | null>;
+    getStudent: (userObj: {
+      nationalCode: string;
+      password: string;
+    }) => Promise<Student | null>;
   },
 ): Promise<
   | {
-      user: Omit<Manager | Expert | Teacher, 'permissions'> & {
+      user: Omit<Manager | Expert | Teacher | Student, 'permissions'> & {
         permissions: PermissionsEnum[];
       };
       role: RolesEnum;
@@ -99,10 +104,29 @@ export async function authenticateLogic(
     };
   }
 
+  if (userObj.role === RolesEnum.STUDENT) {
+    const user = await authenticateModelLogic<Student>(
+      { username: userObj.username, password: userObj.password },
+      getUserFns.getStudent,
+    );
+
+    if (!user) {
+      return false;
+    }
+
+    return {
+      user: {
+        ...user,
+        permissions: userObj.permissions || [],
+      },
+      role: RolesEnum.STUDENT,
+    };
+  }
+
   return false;
 }
 
-async function authenticateModelLogic<T extends Manager | Expert>(
+async function authenticateModelLogic<T extends Manager | Expert | Student>(
   userObj: { username: string; password: string },
   getUser: (userObj: {
     nationalCode: string;

@@ -79,7 +79,7 @@ export class AuthService {
         loginDto.nationalCode,
         loginDto.password,
         student.permissions?.map((p: UserHasPermission) => p.permission) || [],
-        RolesEnum.TEACHER,
+        RolesEnum.STUDENT,
       );
       return { token };
     } catch {

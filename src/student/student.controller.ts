@@ -3,9 +3,13 @@ import {
   Controller,
   Get,
   Param,
+  Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { StudentService } from './student.service';
@@ -20,6 +24,7 @@ import {
   FindAllStudentDto,
   findAllStudentDtoSchema,
 } from './dtos/find-all-student.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('student')
 export class StudentController {
@@ -27,7 +32,7 @@ export class StudentController {
 
   @Get('')
   @UseGuards(HasAccessGuard)
-  @Permissions([PermissionsEnum.FIND_EXPERT])
+  @Permissions([PermissionsEnum.FIND_STUDENT])
   async findAllStudent(
     @Query(new ZodValidationPipe(findAllStudentDtoSchema))
     query: FindAllStudentDto,
@@ -47,9 +52,20 @@ export class StudentController {
 
   @Get(':id')
   @UseGuards(HasAccessGuard)
-  @Permissions([PermissionsEnum.FIND_EXPERT])
+  @Permissions([PermissionsEnum.FIND_STUDENT])
   async findOneStudent(@Param('id') id: number) {
     return this.studentService.findOneStudent(id);
+  }
+
+  @Post('upload-cv')
+  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.UPLOAD_CV])
+  async uploadAdmission(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: { user: { id: number } },
+  ) {
+    return this.studentService.uploadCv(req.user.id, file);
   }
 
   //  @Post()
@@ -62,7 +78,7 @@ export class StudentController {
   //
   @Put(':id')
   @UseGuards(HasAccessGuard)
-  @Permissions([PermissionsEnum.UPDATE_EXPERT])
+  @Permissions([PermissionsEnum.UPDATE_STUDENT])
   async updateStudent(
     @Param('id') id: number,
     @Body(new ZodValidationPipe(updateStudentDtoSchema))

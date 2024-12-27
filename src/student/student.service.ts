@@ -6,10 +6,17 @@ import { FindAllStudentDto } from './dtos/find-all-student.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 import { createSearchObject } from 'src/common/ports/database/helpers.tool';
+import { saveUploadedFile } from 'src/common/file/save-file.logic';
+import { getFileName, getFileUrl } from 'src/common/file/files.logic';
+import { UploadedFileRepository } from 'src/uploaded-file/entities/repositories/uploaded-file.repository';
+import { UploadedFileTypesEnum } from 'src/uploaded-file/enums/uploaded-file-types.enum';
 
 @Injectable()
 export class StudentService {
-  constructor(private studentRepository: StudentRepository) {}
+  constructor(
+    private uploadedFileRepository: UploadedFileRepository,
+    private studentRepository: StudentRepository,
+  ) {}
 
   //  async createStudent(createStudentDto: CreateStudentDto): Promise<Student> {
   //    return this.studentRepository.create(createStudentDto);
@@ -17,6 +24,21 @@ export class StudentService {
 
   async updateStudent(updateStudentDto: UpdateStudentDto, id: number) {
     return this.studentRepository.updateOneById(updateStudentDto, id);
+  }
+
+  async uploadCv(id: number, file: Express.Multer.File) {
+    const savedFile = await saveUploadedFile(
+      getFileName(file.originalname, id),
+      file.buffer,
+      'students-cv',
+    );
+
+    await this.uploadedFileRepository.create({
+      uploadType: UploadedFileTypesEnum.CV,
+      modelId: id,
+      modelType: 'students',
+      path: savedFile,
+    });
   }
 
   async findOneStudent(id: number) {
@@ -48,6 +70,6 @@ export class StudentService {
       throw new Error();
     }
 
-    return path;
+    return getFileUrl(path);
   }
 }

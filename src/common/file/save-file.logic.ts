@@ -6,7 +6,7 @@ function saveFile(
   file: NodeJS.ArrayBufferView,
   filePath = '',
 ): Promise<string> {
-  const pthWithFilename = path.resolve(filePath, `${Date.now()}-${fileName}`);
+  const pthWithFilename = path.resolve(filePath, fileName);
   if (!existsSync(filePath)) {
     mkdirSync(filePath, { recursive: true });
   }

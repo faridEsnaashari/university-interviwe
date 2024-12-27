@@ -7,6 +7,7 @@ import { FindAllTeacherDto } from './dtos/find-all-teacher.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 import { createSearchObject } from 'src/common/ports/database/helpers.tool';
+import { getFileUrl } from 'src/common/file/files.logic';
 
 @Injectable()
 export class TeacherService {
@@ -47,6 +48,6 @@ export class TeacherService {
       throw new Error();
     }
 
-    return path;
+    return getFileUrl(path);
   }
 }
