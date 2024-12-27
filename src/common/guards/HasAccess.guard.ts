@@ -42,7 +42,7 @@ export class HasAccessGuard implements CanActivate {
     }
 
     const checkPermission = authorizeLogic(
-      permissions,
+      permissions || [],
       user.user?.permissions || [],
     );
 
