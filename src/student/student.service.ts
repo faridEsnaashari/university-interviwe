@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudentRepository } from './entities/repositories/student.repository';
 import { Student } from './entities/student.entity';
 import { UpdateStudentDto } from './dtos/update-student.dto';
@@ -6,7 +6,10 @@ import { FindAllStudentDto } from './dtos/find-all-student.dto';
 import { Paginated } from 'src/common/types/pagination.type';
 import { jsonToXlsx } from 'src/common/file/xlsx.logic';
 import { createSearchObject } from 'src/common/ports/database/helpers.tool';
-import { saveUploadedFile } from 'src/common/file/save-file.logic';
+import {
+  makeFilePublic,
+  saveUploadedFile,
+} from 'src/common/file/save-file.logic';
 import { getFileName, getFileUrl } from 'src/common/file/files.logic';
 import { UploadedFileRepository } from 'src/uploaded-file/entities/repositories/uploaded-file.repository';
 import { UploadedFileTypesEnum } from 'src/uploaded-file/enums/uploaded-file-types.enum';
@@ -26,6 +29,40 @@ export class StudentService {
     return this.studentRepository.updateOneById(updateStudentDto, id);
   }
 
+  async getBill(id: number) {
+    const uploadedFile = await this.uploadedFileRepository.findOne({
+      where: {
+        modelType: 'students',
+        modelId: id,
+        uploadType: UploadedFileTypesEnum.BILL,
+      },
+      order: [['createdAt', 'DESC']],
+    });
+
+    if (!uploadedFile) {
+      throw new NotFoundException('no bill fount');
+    }
+
+    return makeFilePublic(uploadedFile.path);
+  }
+
+  async getCv(id: number) {
+    const uploadedFile = await this.uploadedFileRepository.findOne({
+      where: {
+        modelType: 'students',
+        modelId: id,
+        uploadType: UploadedFileTypesEnum.CV,
+      },
+      order: [['createdAt', 'DESC']],
+    });
+
+    if (!uploadedFile) {
+      throw new NotFoundException('no cv fount');
+    }
+
+    return makeFilePublic(uploadedFile.path);
+  }
+
   async uploadBill(id: number, file: Express.Multer.File) {
     const savedFile = await saveUploadedFile(
       getFileName(file.originalname, id),
@@ -34,7 +71,7 @@ export class StudentService {
     );
 
     await this.uploadedFileRepository.create({
-      uploadType: UploadedFileTypesEnum.BILL,
+      uploadType: UploadedFileTypesEnum.CV,
       modelId: id,
       modelType: 'students',
       path: savedFile,

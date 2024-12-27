@@ -25,4 +25,6 @@ export enum PermissionsEnum {
   UPDATE_STUDENT = 'UPDATE_STUDENT',
   UPLOAD_CV = 'UPLOAD_CV',
   UPLOAD_BILL = 'UPLOAD_BILL',
+  GET_BILL = 'GET_BILL',
+  GET_CV = 'GET_CV',
 }

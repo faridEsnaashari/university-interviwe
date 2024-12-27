@@ -25,6 +25,7 @@ import {
   findAllStudentDtoSchema,
 } from './dtos/find-all-student.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Student } from './entities/student.entity';
 
 @Controller('student')
 export class StudentController {
@@ -96,5 +97,19 @@ export class StudentController {
     updateStudentDto: UpdateStudentDto,
   ) {
     return this.studentService.updateStudent(updateStudentDto, id);
+  }
+
+  @Get(':id/bill')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.GET_BILL])
+  async getBill(@Param('id') id: Student['id']) {
+    return this.studentService.getBill(id);
+  }
+
+  @Get(':id/cv')
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.GET_CV])
+  async cv(@Param('id') id: Student['id']) {
+    return this.studentService.getCv(id);
   }
 }
