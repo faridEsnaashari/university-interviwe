@@ -26,6 +26,21 @@ export class StudentService {
     return this.studentRepository.updateOneById(updateStudentDto, id);
   }
 
+  async uploadBill(id: number, file: Express.Multer.File) {
+    const savedFile = await saveUploadedFile(
+      getFileName(file.originalname, id),
+      file.buffer,
+      'students-bill',
+    );
+
+    await this.uploadedFileRepository.create({
+      uploadType: UploadedFileTypesEnum.BILL,
+      modelId: id,
+      modelType: 'students',
+      path: savedFile,
+    });
+  }
+
   async uploadCv(id: number, file: Express.Multer.File) {
     const savedFile = await saveUploadedFile(
       getFileName(file.originalname, id),

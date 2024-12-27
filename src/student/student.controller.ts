@@ -61,11 +61,22 @@ export class StudentController {
   @UseInterceptors(FileInterceptor('file'))
   @UseGuards(HasAccessGuard)
   @Permissions([PermissionsEnum.UPLOAD_CV])
-  async uploadAdmission(
+  async uploadCv(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: { user: { id: number } },
   ) {
     return this.studentService.uploadCv(req.user.id, file);
+  }
+
+  @Post('upload-bill')
+  @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(HasAccessGuard)
+  @Permissions([PermissionsEnum.UPLOAD_BILL])
+  async uploadBill(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: { user: { id: number } },
+  ) {
+    return this.studentService.uploadBill(req.user.id, file);
   }
 
   //  @Post()
